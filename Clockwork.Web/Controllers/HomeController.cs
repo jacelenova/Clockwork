@@ -54,11 +54,6 @@ namespace Clockwork.Web.Controllers
             ReadOnlyCollection<TimeZoneInfo> timeZones;
             timeZones = TimeZoneInfo.GetSystemTimeZones();
 
-            foreach (var x in timeZones)
-            {
-                Debug.WriteLine(x.DisplayName);
-            }
-
             return timeZones;
         }
 
@@ -75,11 +70,6 @@ namespace Clockwork.Web.Controllers
             }
 
             return value;
-        }
-
-        public ActionResult GetPartial()
-        {
-            return View("_TimeQueryPartial");
         }
     }
 }
