@@ -34,6 +34,10 @@ namespace Clockwork.Web.Controllers
         public async Task<IEnumerable<CurrentTimeQuery>> GetTimeQueries()
         {
             var timeQueries = await HttpClientHelper.GetItemsAsync<CurrentTimeQuery>(apiUrl + "currenttime");
+            foreach (CurrentTimeQuery item in timeQueries)
+            {
+                item.TimeZoneName = GetTimeZoneById(item.TimeZone).DisplayName;
+            }
             return timeQueries;
         }
 
@@ -41,6 +45,7 @@ namespace Clockwork.Web.Controllers
         public async Task<JsonResult> CreateTimeQuery(CurrentTimeQuery data)
         {
             var timeQuery = await HttpClientHelper.PostRequest<CurrentTimeQuery>(apiUrl + "currenttime", data);
+            timeQuery.TimeZoneName = GetTimeZoneById(timeQuery.TimeZone).DisplayName;
             return Json(timeQuery);
         }
 
@@ -55,6 +60,21 @@ namespace Clockwork.Web.Controllers
             }
 
             return timeZones;
+        }
+
+        public TimeZoneInfo GetTimeZoneById(string id)
+        {
+            TimeZoneInfo value = default(TimeZoneInfo);
+            foreach(TimeZoneInfo info in TimeZoneInfo.GetSystemTimeZones())
+            {
+                if (info.Id == id)
+                {
+                    value = info;
+                    break;
+                }
+            }
+
+            return value;
         }
 
         public ActionResult GetPartial()

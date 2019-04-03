@@ -12,6 +12,7 @@ namespace Clockwork.Web.Models
         public string ClientIp { get; set; }
         public DateTime UTCTime { get; set; }
         public string TimeZone { get; set; }
+        public string TimeZoneName { get; set; }
     }
 
     public class CurrentTimeQueries
