@@ -13,13 +13,13 @@ namespace Clockwork.Web.Tests.Controllers
     public class HomeControllerTest
     {
         [Test]
-        public void Index()
+        public async void Index()
         {
             // Arrange
             var controller = new HomeController();
 
             // Act
-            var result = (ViewResult)controller.Index();
+            var result = await controller.Index() as ViewResult;
 
             var mvcName = typeof(Controller).Assembly.GetName();
             var isMono = Type.GetType("Mono.Runtime") != null;
