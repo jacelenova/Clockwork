@@ -14,7 +14,7 @@ namespace Clockwork.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private string apiUrl = "http://localhost:5000/api/";
+        private string apiUrl = "http://localhost:53557/api/";
 
         public async Task<ActionResult> Index()
         {
