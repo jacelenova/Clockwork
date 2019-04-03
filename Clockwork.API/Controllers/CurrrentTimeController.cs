@@ -1,8 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Clockwork.API.Models;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace Clockwork.API.Controllers
 {
@@ -44,19 +42,6 @@ namespace Clockwork.API.Controllers
             dbContext.SaveChanges();
 
             return Ok(timeQuery);
-        }
-
-        public ReadOnlyCollection<TimeZoneInfo> GetTimeZones()
-        {
-            ReadOnlyCollection<TimeZoneInfo> timeZones;
-            timeZones = TimeZoneInfo.GetSystemTimeZones();
-
-            foreach (var x in timeZones)
-            {
-                Debug.WriteLine(x.DisplayName);
-            }
-
-            return timeZones;
         }
     }
 }
