@@ -36,7 +36,8 @@ namespace Clockwork.API.Controllers
             {
                 UTCTime = utcTime,
                 ClientIp = ip,
-                Time = tzTime
+                Time = tzTime,
+                TimeZone = data.TimeZone
             };
 
             dbContext.Add(timeQuery);
