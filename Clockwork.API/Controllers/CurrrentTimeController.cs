@@ -1,41 +1,61 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Clockwork.API.Models;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Clockwork.API.Controllers
 {
     [Route("api/[controller]")]
     public class CurrentTimeController : Controller
     {
+        private ClockworkContext dbContext;
+
+        public CurrentTimeController(ClockworkContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         // GET api/currenttime
         [HttpGet]
         public IActionResult Get()
         {
+            var timeQueries = dbContext.CurrentTimeQueries;
+            return Ok(timeQueries);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody]CurrentTimeQuery data)
+        {
             var utcTime = DateTime.UtcNow;
             var serverTime = DateTime.Now;
-            var ip = this.HttpContext.Connection.RemoteIpAddress.ToString();
+            var tzTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(utcTime, data.TimeZone);
+            var ip = HttpContext.Connection.RemoteIpAddress.ToString();
 
-            var returnVal = new CurrentTimeQuery
+            var timeQuery = new CurrentTimeQuery
             {
                 UTCTime = utcTime,
                 ClientIp = ip,
-                Time = serverTime
+                Time = tzTime
             };
 
-            using (var db = new ClockworkContext())
-            {
-                db.CurrentTimeQueries.Add(returnVal);
-                var count = db.SaveChanges();
-                Console.WriteLine("{0} records saved to database", count);
+            dbContext.Add(timeQuery);
+            dbContext.SaveChanges();
 
-                Console.WriteLine();
-                foreach (var CurrentTimeQuery in db.CurrentTimeQueries)
-                {
-                    Console.WriteLine(" - {0}", CurrentTimeQuery.UTCTime);
-                }
+            return Ok(timeQuery);
+        }
+
+        public ReadOnlyCollection<TimeZoneInfo> GetTimeZones()
+        {
+            ReadOnlyCollection<TimeZoneInfo> timeZones;
+            timeZones = TimeZoneInfo.GetSystemTimeZones();
+
+            foreach (var x in timeZones)
+            {
+                Debug.WriteLine(x.DisplayName);
             }
 
-            return Ok(returnVal);
+            return timeZones;
         }
     }
 }
